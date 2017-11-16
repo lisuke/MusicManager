@@ -546,24 +546,28 @@ int copy_file(const char * src,const char * dest)
 }
 
 void load_play(char *envp[])
-{//
-	// system("gst-play-1.0 \"/home/lisuke/Downloads/让泪化作相思雨.mp3\"");
-	
-	string str;
-	list.
+{//use mpg123
+
+	char * m_list[list.size()+2];
+	int index = 1;
+	m_list[0] = new char[8];
+	sprintf(m_list[0],"%s","mpg123");
 	for (auto i = list.begin(); i != list.end(); ++i)
 	{
-		str+=" \""+i->first+"\"";
-		// str=i->first;
+		m_list[index] = new char[i->first.size()];
+		sprintf(m_list[index],"%s",i->first.c_str());
+		index++;
 	}
-	std::cout<<str;
+	m_list[index] = NULL;
 
 	if(fork()==0)
-		if (execl("/bin/mpg123","mpg123",str.c_str(),(char *)NULL)<0)
+		if (execv("/bin/mpg123",m_list)<0)
 		{
-			
-		}
 
+		}
+	while(index>=0){
+		delete m_list[index--];
+	}
 }
 void save_to_backup(std::multimap<std::string, string> &backup)
 {
