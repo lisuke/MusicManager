@@ -6,6 +6,7 @@
 #include "MusicItem.h"
 #include "Loader.h"
 #include <stdio.h>
+#include <unistd.h>
 // using namespace std;
 
 std::multimap<std::string, MusicItem> lib;//音乐库
@@ -544,19 +545,25 @@ int copy_file(const char * src,const char * dest)
 	fclose(pdest);
 }
 
-void load_play()
+void load_play(char *envp[])
 {//
 	// system("gst-play-1.0 \"/home/lisuke/Downloads/让泪化作相思雨.mp3\"");
-	/*
-	string str("gst-play-1.0 ");
+	
+	string str;
+	list.
 	for (auto i = list.begin(); i != list.end(); ++i)
 	{
-		str+=" \""+i->first+" \"";
+		str+=" \""+i->first+"\"";
+		// str=i->first;
 	}
-	cout<<str;
-	system(str.c_str());
-	*/
-	// copy_file("/home/lisuke/Downloads/让泪化作相思雨.mp3","1.mp3");
+	std::cout<<str;
+
+	if(fork()==0)
+		if (execl("/bin/mpg123","mpg123",str.c_str(),(char *)NULL)<0)
+		{
+			
+		}
+
 }
 void save_to_backup(std::multimap<std::string, string> &backup)
 {
@@ -621,7 +628,7 @@ void home_list()
 	std::cout<<"   e. 退出\e[0m"<<std::endl;
 }
 
-int home_page()
+int home_page(char *envp[])
 {
 	char flag;
 	bool is=false;
@@ -647,7 +654,7 @@ int home_page()
 			case '5':search_music();			break;
 			case '6':show_all();				break;
 			case '7':music_list();				break;
-			case '8':load_play();				break;
+			case '8':load_play(envp);			break;
 			case '9':backup_lib_music();		break;
 			case 'e':return 0; 				break;
 
@@ -659,11 +666,11 @@ int home_page()
 }
 
 
-int main(int argc, char const *argv[])
+int main(int argc, char const *argv[],char *envp[])
 {
 	std::cout<<"loading"<<std::endl;
 	init();
-	while(home_page());
+	while(home_page(envp));
 	std::cout<<"good bye!"<<std::endl;
 	return 0;
 }
